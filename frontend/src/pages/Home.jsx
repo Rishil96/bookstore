@@ -11,8 +11,12 @@ import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
 const Home = () => {
   
   // States 
+  // Books state will hold the list of books that we receive from backend
   const [books, setBooks] = useState([]);
+  // Loading state holds a boolean as when loading is true we display a widget of loading icon instead of blank screen
   const [loading, setLoading] = useState(false);
+
+  // Use Effect will run when we initially visit the route and load all the books in the database and set the list of values in usestate
   useEffect(() => {
     setLoading(true);
     axios.get('http://localhost:5555/books')
@@ -24,16 +28,18 @@ const Home = () => {
       console.log(error);
       setLoading(false);
     })
-  });
+  }, []);
 
   return (
     <div className='p-4'>
       <div className='flex justify-between items-center'>
         <h1 className='text-3x1 my-8'>Books List</h1>
+        {/* Link Box with +icon to create a new book */}
         <Link to='/books/create'>
           <MdOutlineAddBox className='text-sky-800 text-4x1' />
         </Link>
       </div>
+      {/* If loading is true display spinner or else display our books table */}
       { loading ? (
         <Spinner />
       ) : (
@@ -49,25 +55,27 @@ const Home = () => {
           </thead>
           <tbody>
             {books.map((book, index) => {
-              <tr>
-                <td className='border border-slate-600 rounded-md text-center'> {index + 1} </td>
-                <td className='border border-slate-600 rounded-md text-center max-md:hidden'> {book.title} </td>
-                <td className='border border-slate-600 rounded-md text-center max-md:hidden'> {book.author} </td>
-                <td className='border border-slate-600 rounded-md text-center'> {book.publishYear} </td>
-                <td className='border border-slate-600 rounded-md text-center'>
-                  <div className='flex justify-center gap-x-4'>
-                    <Link to={`/books/details/${book._id}`}>
-                      <BsInfoCircle className='text-2x1 text-green-800'/>
-                    </Link>
-                    <Link to={`/books/edit/${book._id}`}>
-                      <AiOutlineEdit className='text-2x1 text-yellow-600'/>
-                    </Link>
-                    <Link to={`/books/delete/${book._id}`}>
-                      <MdOutlineDelete className='text-2x1 text-red-600'/>
-                    </Link>
-                  </div>
-                </td>
-              </tr>
+              return (
+                <tr>
+                  <td className='border border-slate-600 rounded-md text-center'> {index + 1} </td>
+                  <td className='border border-slate-600 rounded-md text-center max-md:hidden'> {book.title} </td>
+                  <td className='border border-slate-600 rounded-md text-center max-md:hidden'> {book.author} </td>
+                  <td className='border border-slate-600 rounded-md text-center'> {book.publishYear} </td>
+                  <td className='border border-slate-600 rounded-md text-center'>
+                    <div className='flex justify-center gap-x-4'>
+                      <Link to={`/books/details/${book._id}`}>
+                        <BsInfoCircle className='text-2x1 text-green-800'/>
+                      </Link>
+                      <Link to={`/books/edit/${book._id}`}>
+                        <AiOutlineEdit className='text-2x1 text-yellow-600'/>
+                      </Link>
+                      <Link to={`/books/delete/${book._id}`}>
+                        <MdOutlineDelete className='text-2x1 text-red-600'/>
+                      </Link>
+                    </div>
+                  </td>
+                </tr>
+              )
 
               })}
           </tbody>
